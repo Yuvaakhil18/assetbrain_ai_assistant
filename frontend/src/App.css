@@ -1,0 +1,134 @@
+:root {
+  --bg-gradient: radial-gradient(circle at center, #FBF7EF, #F3ECDF, #E9DFCC);
+  --glass-normal: rgba(255, 255, 255, 0.58);
+  --glass-elevated: rgba(255, 255, 255, 0.8);
+  --border: rgba(28, 27, 24, 0.10);
+  --shadow-warm: 0 4px 24px rgba(28, 27, 24, 0.10);
+  --text-primary: #1C1B18;
+  --text-secondary: #6E6A61;
+  --brand-verified: #013E37;
+  --butter: #FFEFB3;
+  --needs-approval: #B4832E;
+  --compliance-risk: #A8503B;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg-gradient);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Inter, sans-serif;
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Glassmorphism utility classes */
+.glass-panel {
+  background: var(--glass-normal);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-warm);
+  border-radius: 16px;
+  padding: 16px;
+}
+
+.glass-elevated {
+  background: var(--glass-elevated);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-warm);
+  border-radius: 12px;
+}
+
+/* Layout */
+.app-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Typography */
+h1, h2, h3 { margin-top: 0; color: var(--text-primary); }
+p { color: var(--text-secondary); line-height: 1.5; }
+.label { font-size: 0.875rem; color: var(--text-secondary); font-weight: 500; }
+
+/* Citations */
+.citation-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--brand-verified);
+  color: white;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  margin: 2px;
+}
+.citation-content {
+  margin-top: 8px;
+  padding: 8px;
+  background: var(--butter);
+  color: var(--text-primary);
+  border-radius: 8px;
+  font-size: 0.875rem;
+}
+
+/* Buttons */
+.btn-primary {
+  min-height: 44px;
+  min-width: 44px;
+  background: var(--brand-verified);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-secondary {
+  min-height: 44px;
+  min-width: 44px;
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Recommendation Card */
+.recommendation-card {
+  border-left: 4px solid var(--needs-approval);
+}
+.status-badge.needs-approval {
+  color: var(--needs-approval);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  margin-bottom: 8px;
+}
+
+/* Compliance Alert */
+.compliance-alert {
+  border-left: 4px solid var(--compliance-risk);
+}
+.status-badge.compliance-risk {
+  color: var(--compliance-risk);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  margin-bottom: 8px;
+}

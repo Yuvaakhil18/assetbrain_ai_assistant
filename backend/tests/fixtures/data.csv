@@ -1,0 +1,3 @@
+equipment_tag,location,status,fault_history
+P-204,Unit 1,Active,Seal leak
+V-101,Unit 2,Maintenance,Valve sticking
