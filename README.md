@@ -29,17 +29,62 @@ In asset-heavy industries (manufacturing, energy, chemicals), critical knowledge
 
 ---
 
-## 4. System Architecture
+## 4. System Architecture & Design
 
-The architecture operates in a unidirectional ingestion-to-retrieval pipeline:
+The system operates via a strict unidirectional pipeline where data maintains full provenance from ingestion to inference. 
 
-1. **Ingestion & Extraction:** Processes unstructured PDFs, P&IDs, and informal technician notes. Extracts entities and relationships against a rigid industrial schema.
-2. **Knowledge Graph (The Core):** Stores the mapped relationships (`Asset -> HAS_FAULT -> RESOLVED_BY -> Fix`). 
-3. **Retrieval Engine:** Traverses the graph to resolve multi-hop queries (e.g., "Find all recurring faults on Pump P-204 and check if the latest fix complies with OISD regulations").
+### Data Flow & Architecture
+
+```mermaid
+flowchart TD
+    subgraph Ingestion["1. Ingestion Layer"]
+        A1[PDF/Docs] --> B1(Text/Vision Parser)
+        A2[Scanned P&IDs] --> B2(Multimodal Vision Parser)
+        A3[Spreadsheets] --> B3(Schema-Aware Parser)
+        A4[Emails/Notes] --> B4(Text Parser)
+    end
+    
+    subgraph Extraction["2. Extraction & Structuring"]
+        B1 & B2 & B3 & B4 --> C(Entity/Relation Extractor)
+        C --> D{Schema Validator}
+        D -- Invalid --> E[DLQ / Audit Log]
+        D -- Valid --> F(Graph Loader)
+    end
+
+    subgraph Knowledge["3. Knowledge Graph (The Brain)"]
+        F --> G[(Graph Database)]
+        G -.->|Indexes| H[(Vector Store / Text Index)]
+    end
+
+    subgraph Retrieval["4. GraphRAG Layer"]
+        I[User Query] --> J(Query Planner / Router)
+        J --> K(Graph Traversal & Vector Search)
+        K --> L[Sub-graph + Provenance Metadata]
+    end
+
+    subgraph Agents["5. Agentic Layer"]
+        L --> M[Expert Copilot Agent]
+        L --> N[Maintenance/RCA Agent]
+        L --> O[Compliance Agent]
+    end
+
+    subgraph UI["6. Client / UI"]
+        M --> P1[Answer with Citations]
+        N --> P2[Recommendation Card + Approval Gate]
+        O --> P3[Compliance Alert]
+        P1 & P2 & P3 --> Q[Mobile-First Frontend]
+    end
+```
+
+### Core Components Explanation
+
+1. **Ingestion & Extraction:** Processes unstructured PDFs, P&IDs, and informal technician notes. It uses multimodal LLMs to accurately parse complex schematics that standard OCR fails to interpret. It extracts entities and relationships strictly against a rigid industrial schema to prevent hallucinated entity bloat.
+2. **Knowledge Graph (The Core):** Instead of relying purely on vector embeddings, the system stores relationships deterministically in a Graph Database (Neo4j). This ensures that querying `(Asset {tag: 'P-204'})-[:HAS_FAULT]->(Fault)` remains O(1) or O(log N) latency even at massive scale.
+3. **Retrieval Engine (GraphRAG):** Traverses the graph to resolve multi-hop queries (e.g., "Find all recurring faults on Pump P-204 and check if the latest fix complies with OISD regulations"). Every subgraph extracted carries full provenance (Document ID, Page Number) ensuring responses are completely traceable.
 4. **Agentic Layer:** 
-    - *Expert Copilot Agent:* Handles Q&A with strict citations.
-    - *Maintenance Agent:* Proposes Root Cause Analyses and next actions.
-    - *Compliance Agent:* Audits proposed procedures against statutory regulations (Factory Act, PESO, etc.).
+    - *Expert Copilot Agent:* Handles user Q&A, formatting answers with strict citations based on retrieved sub-graphs.
+    - *Maintenance/RCA Agent:* Proposes Root Cause Analyses and next actions, culminating in a mandatory human approval gate.
+    - *Compliance Agent:* Audits proposed procedures against statutory regulations (Factory Act, PESO, etc.) acting as an automated safety layer.
 
 ---
 
