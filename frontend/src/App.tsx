@@ -1,11 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { 
-  FileText, CheckCircle2, AlertTriangle, ShieldAlert, 
-  Search, Mic, X, Menu, MessageSquare, Plus, Activity,
-  BrainCircuit, ChevronRight, XCircle, FileClock, Send, Calculator,
+  FileText, AlertTriangle, ShieldAlert, 
+  Search, X, Menu, MessageSquare, Plus, Activity,
+  BrainCircuit, FileClock, Send, Calculator,
   ChevronLeft, ChevronDown, Sun, Moon, HelpCircle, LogOut, Gift, Bell,
-  BookOpen, Calendar, TrendingUp, Paperclip, Lock, ArrowRight, PanelLeftClose
+  BookOpen, Calendar, TrendingUp, Paperclip, Lock, ArrowRight
 } from 'lucide-react';
+// @ts-ignore
 import ImpactCalculator from './components/ImpactCalculator';
 
 const T = {
