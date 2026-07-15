@@ -96,6 +96,7 @@ export default function App() {
     }
   });
   const [currentConvId, setCurrentConvId] = useState<string | null>(null);
+  const [approvedOrders, setApprovedOrders] = useState<Record<number, boolean>>({});
   
   const endOfMessagesRef = useRef<HTMLDivElement>(null);
   
@@ -544,12 +545,23 @@ export default function App() {
                           {msg.recommendation.description}
                         </div>
                         <button style={{
-                          padding: '8px 16px', background: T.brand, color: T.brandText, border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '13px', fontWeight: 600, transition: 'opacity 0.15s ease'
+                          padding: '8px 16px', 
+                          background: approvedOrders[idx] ? '#e6f4ea' : T.brand, 
+                          color: approvedOrders[idx] ? '#1e8e3e' : T.brandText, 
+                          border: approvedOrders[idx] ? '1px solid #1e8e3e' : 'none', 
+                          borderRadius: '8px', cursor: 'pointer', fontSize: '13px', fontWeight: 600, transition: 'all 0.15s ease',
+                          display: 'flex', alignItems: 'center', gap: '6px'
                         }}
-                        onMouseOver={e => e.currentTarget.style.opacity = '0.9'}
-                        onMouseOut={e => e.currentTarget.style.opacity = '1'}
+                        onClick={() => setApprovedOrders(prev => ({ ...prev, [idx]: true }))}
+                        onMouseOver={e => { if(!approvedOrders[idx]) e.currentTarget.style.opacity = '0.9' }}
+                        onMouseOut={e => { if(!approvedOrders[idx]) e.currentTarget.style.opacity = '1' }}
                         >
-                          Approve Work Order
+                          {approvedOrders[idx] ? (
+                            <>
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                              Approved
+                            </>
+                          ) : 'Approve Work Order'}
                         </button>
                       </div>
                     )}
