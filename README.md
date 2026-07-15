@@ -86,6 +86,26 @@ flowchart TD
     - *Maintenance/RCA Agent:* Proposes Root Cause Analyses and next actions, culminating in a mandatory human approval gate.
     - *Compliance Agent:* Audits proposed procedures against statutory regulations (Factory Act, PESO, etc.) acting as an automated safety layer.
 
+### System Interaction Flow
+
+```mermaid
+sequenceDiagram
+    actor Tech as Field Technician
+    participant UI as Mobile Frontend
+    participant API as FastAPI Backend
+    participant Graph as Knowledge Graph
+    participant Agent as AI Agent Layer
+    
+    Tech->>UI: Queries asset information (e.g., "Manual for FT-200 pump")
+    UI->>API: POST /api/chat {query}
+    API->>Graph: Traverse graph & execute vector search
+    Graph-->>API: Return relevant Sub-graph & Provenance Metadata
+    API->>Agent: Synthesize answer using strict context
+    Agent-->>API: Structured Response (Answer, Citations, Actions)
+    API-->>UI: JSON payload
+    UI-->>Tech: Displays Chat Bubble, Citations, & Interactive Cards
+```
+
 ---
 
 ## 5. Key Use Cases
@@ -130,8 +150,24 @@ npm install
 npm run dev
 ```
 
-### Deployment (Google Cloud Run)
-We utilize a containerized deployment strategy targeting Google Cloud Run for serverless scalability. See `implementation_plan.md` for full Docker and orchestration details.
+### Deployment (Vercel Edge & Serverless)
+We utilize a unified Vercel deployment strategy. The repository is structured as a monorepo where Vercel natively builds the React frontend as static assets and hosts the FastAPI backend as Serverless Functions (`/api/*`).
+
+```mermaid
+flowchart LR
+    User([Mobile / Web Client]) -->|HTTPS| Edge[Vercel Edge Network]
+    
+    subgraph Vercel[Vercel Platform]
+        UI[React / Vite Frontend\nStatic Assets]
+        API[FastAPI Serverless Function\nPython Backend]
+    end
+    
+    Edge -->|Routes /| UI
+    Edge -->|Routes /api/*| API
+    
+    API -.->|Query| GraphDB[(Neo4j Knowledge Graph)]
+    API -.->|Prompt| LLM[LLM / GenAI Layer]
+```
 
 ---
 
