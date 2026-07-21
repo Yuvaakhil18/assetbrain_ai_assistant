@@ -35,6 +35,13 @@ The system operates via a strict unidirectional pipeline where data maintains fu
 
 ### Data Flow & Architecture
 
+![System Architecture](docs/images/system_architecture.png)
+
+![Data Flow Pipeline](docs/images/data_flow_diagram.png)
+
+<details>
+<summary>View as Mermaid (GitHub only)</summary>
+
 ```mermaid
 flowchart TD
     subgraph Ingestion["1. Ingestion Layer"]
@@ -75,6 +82,7 @@ flowchart TD
         P1 & P2 & P3 --> Q[Mobile-First Frontend]
     end
 ```
+</details>
 
 ### Core Components Explanation
 
