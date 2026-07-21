@@ -34,22 +34,22 @@ const SOURCE_DETAIL: Record<string, {text: string, date: string, type: string}> 
 };
 
 const DEMO_LINES = [
-  "Judges, welcome to the Unified Asset Reasoning Layer. Let me show you what it looks like when an operator has a 360-degree, graph-backed view of their plant.",
-  "Notice this isn't a simple text search. The agent traversed the knowledge graph: from Asset to Fault to Fix. Most importantly, trust is earned. Watch what happens when I tap this citation chip.",
-  "The RCA Agent analyzes this history and proposes an action. But AI should never autonomously execute physical maintenance.",
-  "This is a hardcoded, data-model level approval gate. It cannot be prompt-injected around. Only once an engineer clicks 'Approve' does the state transition to 'EXECUTED'.",
-  "Our Compliance Agent runs continuously in the background, cross-referencing procedures against regulations. Here, it caught a missing Lockout/Tagout step, directly citing Section 32 of the Factory Act.",
-  "Because we structurally isolate instructions from data payloads using Pydantic, the LLM cannot be hijacked by malicious documents.",
-  "We didn't just hardcode a demo for Pump P-204. Our multimodal ingestion pipeline instantly structures unstructured data on the fly. This is true generalizable knowledge extraction."
+  "Welcome to AssetBrain. In industrial plants, operators waste hours searching through disconnected manuals and maintenance logs. Watch how our Knowledge Graph solves this instantly.",
+  "Instead of keyword search, our Graph-RAG engine traverses relationships across thousands of documents. When I ask about past failures on pump P-204, it instantly connects the asset, the fault, and the fix. And because this is enterprise AI, every single fact is directly cited.",
+  "By tapping the citation, technicians see the exact source document. Total transparency, zero hallucinations.",
+  "AssetBrain doesn't just answer questions; it acts as an agentic Copilot. Here it recommends a Work Order. But crucially, our architecture enforces a strict human-in-the-loop approval gate. AI recommends; humans authorize.",
+  "Safety is paramount. Our background Compliance Agent automatically audits procedures against regulatory frameworks like the Factory Act. If a safety step like Lockout-Tagout is missing, it catches it before work begins.",
+  "We also built this for enterprise security. If a malicious document tries to prompt-inject the system, our rigid Pydantic schemas catch and reject the payload instantly.",
+  "Finally, this isn't a hardcoded demo. Our multimodal ingestion engine turns any raw PDF, image, or schematic into a queryable graph. AssetBrain is the ultimate, unified reasoning layer for industrial intelligence. Thank you."
 ];
 
 const NEXT_LINE_DELAYS = [
-  1000, // wait 1s after line 0
-  8000, // wait 8s after line 1 (typing + backend + citation)
-  2000, // wait 2s after line 2
-  3000, // wait 3s after line 3
-  5000, // wait 5s after line 4
-  5000, // wait 5s after line 5
+  1000, // wait 1s after intro
+  3000, // wait 3s after line 1 (give time for backend to return)
+  3000, // wait 3s after line 2 (let them see the citation)
+  2000, // wait 2s after line 3 (approving work order)
+  3000, // wait 3s after line 4 (compliance)
+  3000, // wait 3s after line 5 (security)
   0
 ];
 
@@ -71,7 +71,7 @@ function DemoPitch() {
     for (let i = 0; i < text.length; i++) {
         if (!(window as any).demoPitchActive) return;
         app.setInputValue(text.substring(0, i + 1));
-        await new Promise(r => setTimeout(r, 30));
+        await new Promise(r => setTimeout(r, 25)); // Slightly faster typing
     }
   };
 
@@ -84,16 +84,18 @@ function DemoPitch() {
         if (!(window as any).demoPitchActive) return;
         app.handleSend("What fixed similar faults on P-204 in the past?");
         app.setInputValue("");
-        setTimeout(() => app.setActiveCitation('WO-88213'), 4500); 
     }
     else if (idx === 2) {
-        app.setActiveCitation(null);
+        app.setActiveCitation('WO-88213');
     }
     else if (idx === 3) {
-        const msgIdx = app.messages.findIndex((m: any) => m.recommendation);
-        if (msgIdx !== -1) {
-            app.setApprovedOrders((prev: any) => ({ ...prev, [msgIdx]: true }));
-        }
+        app.setActiveCitation(null);
+        setTimeout(() => {
+            const msgIdx = app.messages.findIndex((m: any) => m.recommendation);
+            if (msgIdx !== -1) {
+                app.setApprovedOrders((prev: any) => ({ ...prev, [msgIdx]: true }));
+            }
+        }, 1500); // Click approve after 1.5 seconds
     }
     else if (idx === 4) {
         await typeText("Review procedure for P-204 maintenance.", app);
