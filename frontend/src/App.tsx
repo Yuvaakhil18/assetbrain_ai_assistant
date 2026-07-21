@@ -33,6 +33,61 @@ const SOURCE_DETAIL: Record<string, {text: string, date: string, type: string}> 
   'Tribal note — R. Iyer': { text: '"...if it trips again within a week after bearing change, check the coupling grease — that\'s what actually got it last time, not the bearing."', date: 'Logged, 2 Feb 2026', type: 'Field Note' },
 };
 
+const DEMO_LINES = [
+  "Judges, welcome to the Unified Asset Reasoning Layer. Let me show you what it looks like when an operator has a 360-degree, graph-backed view of their plant.",
+  "Notice this isn't a simple text search. The agent traversed the knowledge graph: from Asset to Fault to Fix. Most importantly, trust is earned. Watch what happens when I tap this citation chip.",
+  "The RCA Agent analyzes this history and proposes an action. But AI should never autonomously execute physical maintenance.",
+  "This is a hardcoded, data-model level approval gate. It cannot be prompt-injected around. Only once an engineer clicks 'Approve' does the state transition to 'EXECUTED'.",
+  "Our Compliance Agent runs continuously in the background, cross-referencing procedures against regulations. Here, it caught a missing Lockout/Tagout step, directly citing Section 32 of the Factory Act.",
+  "Because we structurally isolate instructions from data payloads using Pydantic, the LLM cannot be hijacked by malicious documents.",
+  "We didn't just hardcode a demo for Pump P-204. Our multimodal ingestion pipeline instantly structures unstructured data on the fly. This is true generalizable knowledge extraction."
+];
+
+function DemoPitch() {
+  const [lineIdx, setLineIdx] = useState(-1);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [visible, setVisible] = useState(true);
+
+  if (!visible) return null;
+
+  const playLine = (idx: number) => {
+    if (idx >= DEMO_LINES.length) {
+      setLineIdx(-1);
+      setIsPlaying(false);
+      return;
+    }
+    setLineIdx(idx);
+    setIsPlaying(true);
+    const u = new SpeechSynthesisUtterance(DEMO_LINES[idx]);
+    u.rate = 1.05;
+    const voices = speechSynthesis.getVoices();
+    const goodVoice = voices.find(v => v.name.includes('Google US English') || v.name.includes('Samantha') || (v.lang.startsWith('en') && v.localService === false)) || voices.find(v => v.lang.startsWith('en'));
+    if (goodVoice) u.voice = goodVoice;
+    
+    u.onend = () => setIsPlaying(false);
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(u);
+  };
+
+  return (
+    <div style={{ position: 'fixed', bottom: 20, right: 20, zIndex: 9999, background: 'var(--panel)', padding: '12px', borderRadius: '12px', border: '1px solid var(--border)', boxShadow: '0 10px 30px rgba(0,0,0,0.15)', display: 'flex', flexDirection: 'column', gap: '8px', maxWidth: '320px' }}>
+      <div style={{ fontSize: '11px', fontWeight: 'bold', color: 'var(--brand)', textTransform: 'uppercase' }}>AI Pitch Mode</div>
+      {lineIdx >= 0 && <div style={{ fontSize: '12px', color: 'var(--text)', fontStyle: 'italic', lineHeight: 1.4 }}>"{DEMO_LINES[lineIdx]}"</div>}
+      <div style={{ display: 'flex', gap: '8px', marginTop: '4px' }}>
+        <button onClick={() => playLine(lineIdx >= 0 ? lineIdx : 0)} disabled={isPlaying} style={{ flex: 1, padding: '6px', background: isPlaying ? 'var(--hover)' : 'var(--brand)', color: isPlaying ? 'var(--text)' : 'var(--brand-text)', border: 'none', borderRadius: '6px', fontSize: '12px', cursor: isPlaying ? 'default' : 'pointer' }}>
+          {isPlaying ? 'Speaking...' : (lineIdx >= 0 ? 'Replay Line' : 'Start AI Pitch')}
+        </button>
+        {lineIdx >= 0 && (
+          <button onClick={() => playLine(lineIdx + 1)} style={{ padding: '6px 12px', background: 'var(--panel)', color: 'var(--text)', border: '1px solid var(--border)', borderRadius: '6px', fontSize: '12px', cursor: 'pointer', fontWeight: 600 }}>
+            Next &#9654;
+          </button>
+        )}
+      </div>
+      <button onClick={() => { setVisible(false); window.speechSynthesis.cancel(); }} style={{ position: 'absolute', top: '-10px', right: '-10px', width: '22px', height: '22px', borderRadius: '11px', background: 'var(--risk)', color: '#fff', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: 'bold' }}>&times;</button>
+    </div>
+  );
+}
+
 function GlassBtn({ children, onClick, active, activeBg, activeColor }: any) {
   return (
     <button
@@ -736,6 +791,7 @@ export default function App() {
         )}
       </div>
 
+      <DemoPitch />
       <style>
         {`
           :root {
