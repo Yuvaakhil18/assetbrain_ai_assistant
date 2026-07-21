@@ -35,13 +35,6 @@ The system operates via a strict unidirectional pipeline where data maintains fu
 
 ### Data Flow & Architecture
 
-![System Architecture](docs/images/system_architecture.png)
-
-![Data Flow Pipeline](docs/images/data_flow_diagram.png)
-
-<details>
-<summary>View as Mermaid (GitHub only)</summary>
-
 ```mermaid
 flowchart TD
     subgraph Ingestion["1. Ingestion Layer"]
@@ -82,7 +75,6 @@ flowchart TD
         P1 & P2 & P3 --> Q[Mobile-First Frontend]
     end
 ```
-</details>
 
 ### Core Components Explanation
 
@@ -95,11 +87,6 @@ flowchart TD
     - *Compliance Agent:* Audits proposed procedures against statutory regulations (Factory Act, PESO, etc.) acting as an automated safety layer.
 
 ### System Interaction Flow
-
-![System Interaction Flow](docs/images/system_interaction_flow.png)
-
-<details>
-<summary>View as Mermaid (GitHub only)</summary>
 
 ```mermaid
 sequenceDiagram
@@ -118,7 +105,6 @@ sequenceDiagram
     API-->>UI: JSON payload
     UI-->>Tech: Displays Chat Bubble, Citations, & Interactive Cards
 ```
-</details>
 
 ---
 
@@ -167,11 +153,6 @@ npm run dev
 ### Deployment (Vercel Edge & Serverless)
 We utilize a unified Vercel deployment strategy. The repository is structured as a monorepo where Vercel natively builds the React frontend as static assets and hosts the FastAPI backend as Serverless Functions (`/api/*`).
 
-![Deployment Architecture](docs/images/deployment_architecture.png)
-
-<details>
-<summary>View as Mermaid (GitHub only)</summary>
-
 ```mermaid
 flowchart LR
     User([Mobile / Web Client]) -->|HTTPS| Edge[Vercel Edge Network]
@@ -187,7 +168,6 @@ flowchart LR
     API -.->|Query| GraphDB[(Neo4j Knowledge Graph)]
     API -.->|Prompt| LLM[LLM / GenAI Layer]
 ```
-</details>
 
 ---
 
