@@ -154,7 +154,6 @@ function DemoPitch() {
   return (
     <div style={{ position: 'fixed', bottom: 20, right: 20, zIndex: 9999, background: 'var(--panel)', padding: '12px', borderRadius: '12px', border: '1px solid var(--border)', boxShadow: '0 10px 30px rgba(0,0,0,0.15)', display: 'flex', flexDirection: 'column', gap: '8px', maxWidth: '320px' }}>
       <div style={{ fontSize: '11px', fontWeight: 'bold', color: 'var(--brand)', textTransform: 'uppercase' }}>AI Pitch Mode</div>
-      {lineIdx >= 0 && <div style={{ fontSize: '12px', color: 'var(--text)', fontStyle: 'italic', lineHeight: 1.4 }}>"{DEMO_LINES[lineIdx]}"</div>}
       <div style={{ display: 'flex', gap: '8px', marginTop: '4px' }}>
         <button onClick={() => playLine(lineIdx >= 0 ? lineIdx : 0)} disabled={isPlaying || lineIdx >= 0} style={{ flex: 1, padding: '6px', background: (isPlaying || lineIdx >= 0) ? 'var(--hover)' : 'var(--brand)', color: (isPlaying || lineIdx >= 0) ? 'var(--text)' : 'var(--brand-text)', border: 'none', borderRadius: '6px', fontSize: '12px', cursor: (isPlaying || lineIdx >= 0) ? 'default' : 'pointer' }}>
           {lineIdx >= 0 ? 'Auto-Playing Demo...' : 'Start Full Auto-Demo'}
