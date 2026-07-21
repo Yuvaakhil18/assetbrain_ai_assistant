@@ -88,6 +88,11 @@ flowchart TD
 
 ### System Interaction Flow
 
+![System Interaction Flow](docs/images/system_interaction_flow.png)
+
+<details>
+<summary>View as Mermaid (GitHub only)</summary>
+
 ```mermaid
 sequenceDiagram
     actor Tech as Field Technician
@@ -105,6 +110,7 @@ sequenceDiagram
     API-->>UI: JSON payload
     UI-->>Tech: Displays Chat Bubble, Citations, & Interactive Cards
 ```
+</details>
 
 ---
 
@@ -153,6 +159,11 @@ npm run dev
 ### Deployment (Vercel Edge & Serverless)
 We utilize a unified Vercel deployment strategy. The repository is structured as a monorepo where Vercel natively builds the React frontend as static assets and hosts the FastAPI backend as Serverless Functions (`/api/*`).
 
+![Deployment Architecture](docs/images/deployment_architecture.png)
+
+<details>
+<summary>View as Mermaid (GitHub only)</summary>
+
 ```mermaid
 flowchart LR
     User([Mobile / Web Client]) -->|HTTPS| Edge[Vercel Edge Network]
@@ -168,6 +179,7 @@ flowchart LR
     API -.->|Query| GraphDB[(Neo4j Knowledge Graph)]
     API -.->|Prompt| LLM[LLM / GenAI Layer]
 ```
+</details>
 
 ---
 
